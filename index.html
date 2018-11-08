@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
+    <!-- <script src="main.js"></script> -->
+</head>
+<body>
+    
+    <script>
+    //objective give a examplke of each below 
+
+    // Array
+    // Object
+    // String
+    // Number
+    // Boolean
+    // Null
+    // Undefined
+    // Date
+
+//use console.log() to display your results in the console.
+    // 1.arrays
+    var Number= [1,2,3,4,5,6,7,8,9,10]
+
+    console.log(Number)
+
+    // 2.Object
+    var person = {
+    firstName:"Zainab",
+    lastName:"Sadien",
+    age:22,
+    eyeColor:"brown"
+}
+
+    console.log(person)
+
+    //  4.String
+    // this is a example i found of a long string best to use double brackets
+    var String = "This is a very long string which needs " +
+                 "to wrap across multiple lines because " +
+                 "otherwise my code is unreadable.";
+    
+    console.log(String)
+
+    // this is my example of a short string with single brackets
+    var string = 'i found love in a hopeless place'
+    console.log(string + ' with zainab')
+
+    // 5.Number
+    // this is my ubderstanding to numbers
+    var a=10,
+        b=12
+
+        console.log(a+b)
+        console.log(a-b)
+        console.log(a*b)
+        console.log(a/b)
+
+    // 6.Boolean
+
+    var x =1;
+    // if the below "if' is not the correct and the var above it will show as false 
+    if(x==3){
+    console.log("true")
+}
+    else{
+    console.log("false")
+}
+
+    // this is a example of the "if" is the same as the var
+
+    var x = 10;
+    
+    if(x==10){
+    console.log("true")
+}
+
+    else{
+    console.log("false")
+}
+
+    // this will be a example of words in boolean
+    // the below is a example of return false
+    var x = "love"
+    var y = "dist"
+    if(x===y){
+        console.log("true")
+    }
+
+    else{
+        console.log("false")
+    }
+
+    // the below is a example of return true
+
+    if(y==x){
+        console.log("true")
+    }
+
+    else{
+        console.log("false")
+    }
+
+    // 7.Null
+    function getVowels(str) {
+  var m = str.match(/[aeiou]/gi);
+  if (m === null) {
+    return null;
+  }
+  return m.length;
+}
+
+console.log(getVowels('sky'));
+   
+    // 8.undefined
+
+    function test(t) {
+  if (t === undefined) {
+     return 'Undefined value!';
+  }
+  return t;
+}
+
+var p;
+
+console.log(test(p));
+// expected output: "Undefined value!"
+
+    // 9.Date
+
+    var today = new Date();
+    console.log(today);
+
+
+    </script>
+
+    
+
+</body>
+</html>
