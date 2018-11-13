@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+    
+</head>
+<body>
+    <h2 style="color:white">AGE VERIFICATION</h2>
+    <input id="age" >
+    <button type="button" onclick="myFunction2()">Enter Your Age</button>
+  <p id="demo2"></p>
+
+
+  <script>
+    function myFunction2(){
+      var age,vote;
+      age=Number(document.getElementById("age").value);
+      if(isNaN(age))
+        {
+          vote="Input Is Not A Number";
+        }
+      else
+        {
+          vote=(age>=18)?"WELCOME":"COME BACK WHEN 18+";
+        }
+       document.getElementById("demo2").innerHTML=vote;
+    }
+  </script>
+</body>
+</html>
