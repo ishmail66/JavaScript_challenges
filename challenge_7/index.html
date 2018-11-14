@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+    
+    body {
+  background: white;
+}
+
+    </style>
+</head>
+<body>
+
+      <center>  <canvas id="countdown" width="300px" height="300px" >   </center>
+
+ <script>
+
+
+   function buildTimer(id, durationMs) {
+  var options = {
+    meter: {
+      radius: 0.50,
+      colors: [
+        {
+          filter: ratio => ratio < 0.50,
+          color: 'rgba(120, 208, 130, 1)',
+          someArbitraryData: 'green',
+        },
+        {
+          filter: ratio => ratio >= 0.50 && ratio < 0.75,
+          color: 'rgba(252, 255, 128, 1)',
+          someArbitraryData: 'yellow',
+        },
+        {
+          filter: ratio => ratio >= 0.75,
+          color: 'rgba(235, 105, 103, 1)',
+          someArbitraryData: 'red',
+        },
+      ],
+    },
+    plug: {
+      radius: 0.40,
+      color: 'black',
+    },
+    timer: {
+      fontFamily: 'Roboto, Arial, Helvetica, sans-serif',
+      fontSize: 0.25,
+      color: 'white',
+      minutes: {
+        left: 0.05,
+      },
+      seconds: {
+        right: 0.05,
+      }
+    },
+    events: {
+      end: {
+        triggered: false,
+        callbacks: [],
+      },
+      changeColor: {
+        callbacks: [],
+      }
+    },
+  };
+  
+  var canvas = document.getElementById(id);
+  var ctx = canvas.getContext('2d');
+  var start = performance.now();
+  var center = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+  };
+  var dimensions = {
+    width: canvas.width,
+    height: canvas.height,
+    meter: {
+      x: center.x,
+      y: center.y,
+      radius: canvas.width * options.meter.radius,
+    },
+    plug: {
+      x: center.x,
+      y: center.y,
+      radius: canvas.width * options.plug.radius,
+    },
+    timer: {
+      fontSize: canvas.width * options.timer.fontSize,
+      minutes: {
+        x: center.x - canvas.width * options.timer.minutes.left,
+        y: center.y
+      },
+      seconds: {
+        x: center.x + canvas.width * options.timer.seconds.right,
+        y: center.y
+      },
+    }
+  }
+  
+  var lastColor=null;
+  function handleAnimationFrame() {
+    var currentMs = performance.now() - start;
+    if (currentMs < durationMs * 1.1) {
+      var remainingMs = Math.max(durationMs - currentMs, 0);
+      var ratio = Math.min(currentMs / durationMs, 1);
+      var label = {};
+      label.minutes = Math.floor(remainingMs / 1000 / 60);
+      label.seconds = Math.floor(remainingMs / 1000 - (label.minutes * 60));
+      
+      ctx.clearRect(0, 0, dimensions.width, dimensions.height);
+      
+      // Draw meter
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(dimensions.meter.x, dimensions.meter.y);
+      ctx.lineTo(dimensions.meter.x, dimensions.meter.y - dimensions.meter.radius);
+      var arcStart = Math.PI * 1.5;
+      var arcEnd = arcStart + (Math.PI * 2 * ratio);
+      ctx.arc(dimensions.meter.x, dimensions.meter.y, dimensions.meter.radius, arcStart, arcEnd);
+      ctx.lineTo(dimensions.meter.x, dimensions.meter.y);
+      ctx.closePath();
+      
+      var selectedColor = options.meter.colors.filter(x => x.filter(ratio))[0];
+      if (lastColor !== selectedColor) {
+        options.events.changeColor.callbacks.forEach(f => f(selectedColor));
+      }
+      lastColor = selectedColor;
+      
+      ctx.fillStyle = selectedColor.color;
+      ctx.fill();
+      ctx.restore();
+
+      // Draw static center
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(dimensions.plug.x, dimensions.plug.y, dimensions.plug.radius, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fillStyle = options.plug.color;
+      ctx.fill();
+      ctx.restore();
+      
+      // Draw dynamic text
+      ctx.save();
+      ctx.font = `${dimensions.timer.fontSize}px ${options.timer.fontFamily}`;
+      ctx.fillStyle = options.timer.color;
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'right';
+      
+      ctx.fillText(label.minutes, dimensions.timer.minutes.x, dimensions.timer.minutes.y);
+
+      ctx.textAlign = 'left';
+      ctx.fillText(label.seconds, dimensions.timer.seconds.x, dimensions.timer.seconds.y)
+      ctx.restore();
+      
+      // Draw static text
+      ctx.save();
+      var labelFontSize = dimensions.timer.fontSize * 0.33;
+      ctx.font = `${labelFontSize}px ${options.timer.fontFamily}`;
+      ctx.fillStyle = options.timer.color;
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'right';
+      ctx.fillText('MIN', dimensions.timer.minutes.x, dimensions.timer.minutes.y + labelFontSize * 2)
+      ctx.textAlign = 'left';
+      ctx.fillText('SEC', dimensions.timer.seconds.x, dimensions.timer.seconds.y + labelFontSize * 2)
+      ctx.restore();
+      
+      window.requestAnimationFrame(handleAnimationFrame);
+    }
+    
+    if (currentMs >= durationMs && !options.events.end.triggered) {
+      options.events.end.callbacks.forEach(f => f());
+      options.events.end.triggered = true;
+    }
+  }
+  
+  function startCountdown() {
+    window.requestAnimationFrame(handleAnimationFrame);
+  }
+  
+  startCountdown();
+  
+  return {
+    on: (event, callback) => {
+      options.events[event].callbacks.push(callback);
+    },
+    reset: () => {
+      start = performance.now();
+      options.events.end.triggered = false;
+      startCountdown();
+    }
+  }
+}
+var timer = buildTimer('countdown', 0.26 * 60 * 1000);
+timer.on('end', e => console.log('complete'));
+timer.on('changeColor', e => console.log('changed color', e));
+
+
+
+
+
+// Dev option
+document.onclick = e => {
+  timer.reset(0);
+}
+
+    </script>
+
+</body>
+</html>
