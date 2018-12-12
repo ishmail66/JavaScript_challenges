@@ -1,7 +1,6 @@
 $(function() {
     setInterval(function(){
       var dt = new Date();
-      //$('.time').text(dt);
     
       var sec_deg = dt.getSeconds() * (360/60);
       var min_deg = dt.getMinutes() * (360/60);
